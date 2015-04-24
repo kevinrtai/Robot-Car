@@ -1,10 +1,10 @@
 //Motor pins
-const int motor1a = 8;
-const int motor1b = 9;
-const int motor1En = 12;
-const int motor2a = 10;
-const int motor2b = 11;
-const int motor2En = 13;
+const int motor1a = 4;
+const int motor1b = 5;
+const int motor1En = 3;
+const int motor2a = 7;
+const int motor2b = 8;
+const int motor2En = 6;
 int m1aState= LOW;
 int m1bState = LOW;
 int m1EnState= LOW;
@@ -20,13 +20,15 @@ void setup() {
   pinMode(motor1b, OUTPUT);
   pinMode(motor2a, OUTPUT);
   pinMode(motor2b, OUTPUT);
+  pinMode(motor1En, OUTPUT);
+  pinMode(motor2En, OUTPUT);
 }
 
 //Infinite loop called automatically by the Arduino board
 void loop() {
   //Digital write writes a value, HIGH or LOW to the output port
-  digitalWrite(motor1a, HIGH);
-  digitalWrite(motor1b, LOW);
+  digitalWrite(motor1a, LOW);
+  digitalWrite(motor1b, HIGH);
   digitalWrite(motor2a, HIGH);
   digitalWrite(motor2b, LOW);
   digitalWrite(motor1En, HIGH);

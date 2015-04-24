@@ -5,6 +5,16 @@ const int motor1En = 12;
 const int motor2a = 10;
 const int motor2b = 11;
 const int motor2En = 13;
+
+//Sensor pins
+const int photoLeft = A0;
+const int photoRight = A1;
+const int photoCenter = A2;
+const int irLeft = A3;
+const int irRight = A4;
+const int irFront= A5;
+
+//State
 int m1aState= LOW;
 int m1bState = LOW;
 int m1EnState= LOW;
@@ -12,10 +22,17 @@ int m2aState= LOW;
 int m2bState= LOW;
 int m2EnState= LOW;
 
+//input values
+const int photolBlack= 0;
+const int photorBlack= 0;
+const int photocBlack= 0;
+const int photocREd= 0;
+const int irClose= 1.5; //1.5 V threshold
+
 //Initialization function
 void setup() {
-  //Put each pin in the correct mode. In this case, since we're
-  //only controlling motors, we put all pins to ouput mode.
+  //Put each pin in the correct mode.
+  //Motors are in OUTPUT mode
   pinMode(motor1a, OUTPUT); 
   pinMode(motor1b, OUTPUT);
   pinMode(motor2a, OUTPUT);
@@ -25,12 +42,86 @@ void setup() {
 //Infinite loop called automatically by the Arduino board
 void loop() {
   //Digital write writes a value, HIGH or LOW to the output port
-  digitalWrite(motor1a, HIGH);
-  digitalWrite(motor1b, LOW);
-  digitalWrite(motor2a, HIGH);
-  digitalWrite(motor2b, LOW);
-  digitalWrite(motor1En, HIGH);
-  digitalWrite(motor2En, HIGH);
+  //test sequence
+  forward();
+  delay (1000);
+  backward();
+  delay(1000);
+  turnCounterClockwise();
+  delay(1000);
+  turnClockwise();
+  delay(1000);
+  correctToRight();
+  correcToLeft();
+  
+  
+  //line following- in progress
+  /*
+   if (analogRead(photoCenter== photocRed)
+     halt();
+     delay(500);
+   else if (analogRead(irFront== irFrontClose))
+     halt();
+     delay(500);
+   else{
+      if((analogRead(photoCenter)==photocBlack)&& (analogRead(photoRight)!=photolBlack)&&(analogRead(photoLeft!=photolBlack))){
+        forward();
+        delay(500);
+      
+      }
+    
+    if((analogRead(photoLeft)!= photoBlack)&&(analogRead(photoRight)!= photoBlack)&&(analogRead(photoCenter)!=photocBlack)){
+      backward()
+      delay(500);
+      halt();
+     
+    }
+     if((analogRead(photoLeft)!= photolBlack)&&(analogRead(photoCenter)!=photocBlack)&&(analogRead(photoRight)==photorBlack)){
+       correctToRight();
+       delay(500);
+       halt();
+   
+    }
+    
+    if ((analogRead(photoRight)!= photoBlack)&&(photoLeft)==photoBlack)){
+     correctToLeft();
+     delay(500);
+     halt();
+    }
+    if ((analogRead(irLeft)>= irClose){
+      correctToRight();
+      delay(500);
+      halt();
+    }
+    if (analogRead(irLeft)>=irClose){
+      correctToLeft();
+      delay(500);
+      halt();
+  
+  
+  }    */
+  
+}
+
+
+void correctToRight(){
+   turnClockwise();
+   delay(500);
+   forward();
+   delay(500);
+   turnCounterClockwise();
+   delay(500);
+   halt(); 
+}
+
+void correctToLeft(){
+   turnCounterClockwise();
+   delay(500);
+   forward();
+   delay(500);
+   turnClockwise();
+   delay(500);
+   halt();
 }
 
 void turnCounterClockwise()

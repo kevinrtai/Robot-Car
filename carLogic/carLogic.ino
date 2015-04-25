@@ -14,16 +14,37 @@ int m2aState= LOW;
 int m2bState= LOW;
 int m2EnState= LOW;
 
-//Button pin
+//Toggle car active button pin
 const int buttonPin = 12;
 
-//Toggle start and stop button
+//Toggle start and stop state
 const int ACTIVE = 1;
 const int INACTIVE = 0;
 int carStatus = INACTIVE;
 
+//Sensor pins
+const int leftPhotoPin = A0;
+const int centerPhotoPin = A1;
+const int rightPhotoPin = A2;
+
+//Thresholds
+int blackThreshold = 100;
+int whiteThreshold = 250;
+int redThreshold = 100;
+
+//Current State
+const int RIGHT = 10;
+const int LEFT = 11;
+const int FORWARD = 12;
+const int STOPPED = 13;
+int state = STOPPED;
+
 //Initialization function
 void setup() {
+  //Begin serial output
+  Serial.begin(9600);
+  Serial.print("We're alive\n");
+  
   //Put each pin in the correct mode. 
   //Motor control pins are output
   pinMode(motor1a, OUTPUT); 
@@ -39,6 +60,7 @@ void setup() {
 
 //Infinite loop called automatically by the Arduino board
 void loop() {
+  //Check to see if the active state is going to be toggled
   int button = digitalRead(buttonPin);
   if(button == HIGH) {
     //Toggle the car status
@@ -56,15 +78,46 @@ void loop() {
     }
   }
   
+  int left = analogRead(leftPhotoPin);
+  int right = analogRead(rightPhotoPin);
+  int center = analogRead(centerPhotoPin);
+    
+//  Serial.print("Left: ");
+//  Serial.println(left, DEC);
+//  Serial.print("Center: ");
+//  Serial.println(center, DEC);
+//  Serial.print("Right: ");
+//  Serial.println(right, DEC);
+    
+  //Do stuff only if the car is active
   if(carStatus == ACTIVE) {
-    forward();
+    if(center <= right && center <= left && (max(left, right) - center) > .1) {
+      if(state != FORWARD) {
+        forward();
+        state = FORWARD;
+      }
+    }
+    //Otherwise, if the right side is seeing black, turn left
+    else if(right <= center && right <= left && (max(center, left) - right) > .1) {
+      if(state != RIGHT) {
+          turnClockwise();
+        state = RIGHT;
+      }
+    }
+    else if(left <= center && left <= right && (max(center, right) - left) < .1) {
+      if(state != LEFT) {
+        turnCounterClockwise();
+        state = LEFT;
+      }
+    }
   }
+  //If the car is not active, halt
   else {
     halt();
   }
 
-  //Wait 50 milliseconds before starting the loop again
-  delay(50);
+  //Wait 10 milliseconds before starting the loop again
+  delay(10);
 }
 
 void turnCounterClockwise()

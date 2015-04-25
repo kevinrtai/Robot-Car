@@ -17,7 +17,10 @@ int m2EnState= LOW;
 //Button pin
 const int buttonPin = 12;
 
-//Button starting
+//Toggle start and stop button
+const int ACTIVE = 1;
+const int INACTIVE = 0;
+int carStatus = INACTIVE;
 
 //Initialization function
 void setup() {
@@ -38,9 +41,25 @@ void setup() {
 void loop() {
   int button = digitalRead(buttonPin);
   if(button == HIGH) {
+    //Toggle the car status
+    if(carStatus == ACTIVE) {
+      carStatus = INACTIVE; 
+    }
+    else {
+      carStatus = ACTIVE;
+    }
+    
+    //Wait for the button to be released
+    while(button == HIGH) {
+      button = digitalRead(buttonPin);
+      delay(100);
+    }
+  }
+  
+  if(carStatus == ACTIVE) {
     forward();
   }
-  else if(button == LOW) {
+  else {
     halt();
   }
 

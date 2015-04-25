@@ -21,6 +21,7 @@ const int buttonPin = 12;
 const int ACTIVE = 1;
 const int INACTIVE = 0;
 int carStatus = INACTIVE;
+int justStarted = INACTIVE;
 
 //Sensor pins
 const int leftPhotoPin = A0;
@@ -31,6 +32,7 @@ const int rightPhotoPin = A2;
 int blackThreshold = 100;
 int whiteThreshold = 250;
 int redThreshold = 100;
+int differenceThreshold = 10;
 
 //Current State
 const int RIGHT = 10;
@@ -65,16 +67,20 @@ void loop() {
   if(button == HIGH) {
     //Toggle the car status
     if(carStatus == ACTIVE) {
-      carStatus = INACTIVE; 
+      carStatus = INACTIVE;
+      justStarted = INACTIVE;
     }
     else {
       carStatus = ACTIVE;
+      justStarted = ACTIVE;
     }
     
     //Wait for the button to be released
     while(button == HIGH) {
       button = digitalRead(buttonPin);
       delay(100);
+      Serial.print("Status: ");
+      Serial.println(carStatus, DEC);
     }
   }
   
@@ -91,20 +97,26 @@ void loop() {
     
   //Do stuff only if the car is active
   if(carStatus == ACTIVE) {
-    if(center <= right && center <= left && (max(left, right) - center) > .1) {
+    Serial.println("Active");
+    if(justStarted == ACTIVE) {
+      forward();
+      state = FORWARD;
+      justStarted = INACTIVE;
+    }
+    else if(center <= right && center <= left && (max(right, left) - center) > differenceThreshold) {
       if(state != FORWARD) {
         forward();
         state = FORWARD;
       }
     }
     //Otherwise, if the right side is seeing black, turn left
-    else if(right <= center && right <= left && (max(center, left) - right) > .1) {
+    else if(right <= center && right <= left && (max(left, center) - right) > differenceThreshold) {
       if(state != RIGHT) {
-          turnClockwise();
+        turnClockwise();
         state = RIGHT;
       }
     }
-    else if(left <= center && left <= right && (max(center, right) - left) < .1) {
+    else if(left <= center && left <= right && (max(center, right) - left) > differenceThreshold) {
       if(state != LEFT) {
         turnCounterClockwise();
         state = LEFT;
@@ -120,10 +132,14 @@ void loop() {
   delay(10);
 }
 
+int computeThreshold(int left, int center, int right) {
+  
+}
+
 void turnCounterClockwise()
 {
   //left motor backwards, right motor forward
-  digitalWrite(motor1En, HIGH);
+  digitalWrite(motor1En, LOW);
   m1EnState= HIGH;
   digitalWrite(motor1a, HIGH);
   m1aState= HIGH;
@@ -131,19 +147,19 @@ void turnCounterClockwise()
   m1bState= LOW;
   digitalWrite(motor2En, HIGH);
   m2EnState= LOW;
-  digitalWrite(motor2a, LOW);
+  digitalWrite(motor2a, HIGH);
   m2aState= LOW;
-  digitalWrite(motor2b, HIGH);
+  digitalWrite(motor2b, LOW);
   m2bState= LOW;
 }
 
 void turnClockwise(){
   //left motor forward, right motor backwards
-  digitalWrite(motor1En, HIGH);
-  m1EnState= HIGH;
-  digitalWrite(motor1a, LOW);
+  digitalWrite(motor1En, LOW);
+  m1EnState= LOW;
+  digitalWrite(motor1a, HIGH);
   m1aState= HIGH;
-  digitalWrite(motor1b, HIGH);
+  digitalWrite(motor1b, LOW);
   m1bState= LOW;
   digitalWrite(motor2En, HIGH);
   m2EnState= HIGH;

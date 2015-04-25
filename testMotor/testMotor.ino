@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //Motor pins
 const int motor1a = 8;
 const int motor1b = 9;
@@ -15,6 +16,17 @@ const int irRight = A4;
 const int irFront= A5;
 
 //State
+=======
+//Motor pins. 1 is right motor, 2 is left motor
+const int motor1a = 4;
+const int motor1b = 5;
+const int motor1En = 3;
+const int motor2a = 7;
+const int motor2b = 8;
+const int motor2En = 6;
+
+//Motor states
+>>>>>>> origin/master
 int m1aState= LOW;
 int m1bState = LOW;
 int m1EnState= LOW;
@@ -22,6 +34,7 @@ int m2aState= LOW;
 int m2bState= LOW;
 int m2EnState= LOW;
 
+<<<<<<< HEAD
 //input values
 const int photolBlack= 0;
 const int photorBlack= 0;
@@ -33,14 +46,31 @@ const int irClose= 1.5; //1.5 V threshold
 void setup() {
   //Put each pin in the correct mode.
   //Motors are in OUTPUT mode
+=======
+//Button pin
+const int buttonPin = 12;
+
+//Button starting
+
+//Initialization function
+void setup() {
+  //Put each pin in the correct mode. 
+  //Motor control pins are output
+>>>>>>> origin/master
   pinMode(motor1a, OUTPUT); 
   pinMode(motor1b, OUTPUT);
   pinMode(motor2a, OUTPUT);
   pinMode(motor2b, OUTPUT);
+  pinMode(motor1En, OUTPUT);
+  pinMode(motor2En, OUTPUT);
+  
+  //Button pin is input
+  pinMode(buttonPin, INPUT);
 }
 
 //Infinite loop called automatically by the Arduino board
 void loop() {
+<<<<<<< HEAD
   //Digital write writes a value, HIGH or LOW to the output port
   //test sequence
   forward();
@@ -122,6 +152,18 @@ void correctToLeft(){
    turnClockwise();
    delay(500);
    halt();
+=======
+  int button = digitalRead(buttonPin);
+  if(button == HIGH) {
+    forward();
+  }
+  else if(button == LOW) {
+    halt();
+  }
+
+  //Wait 50 milliseconds before starting the loop again
+  delay(50);
+>>>>>>> origin/master
 }
 
 void turnCounterClockwise()

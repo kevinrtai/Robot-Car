@@ -139,13 +139,13 @@ int computeThreshold(int left, int center, int right) {
 void turnCounterClockwise()
 {
   //left motor backwards, right motor forward
-  digitalWrite(motor1En, LOW);
+  digitalWrite(motor1En, HIGH);
   m1EnState= HIGH;
   digitalWrite(motor1a, HIGH);
   m1aState= HIGH;
   digitalWrite(motor1b, LOW);
   m1bState= LOW;
-  digitalWrite(motor2En, HIGH);
+  digitalWrite(motor2En, LOW);
   m2EnState= LOW;
   digitalWrite(motor2a, HIGH);
   m2aState= LOW;
